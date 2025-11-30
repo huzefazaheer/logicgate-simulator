@@ -1,7 +1,7 @@
 #include <iostream>
+#include <vector>
 
 enum gatetype{
-    INPUT,
     AND,
     OR,
     NOR,
@@ -9,69 +9,84 @@ enum gatetype{
     NOT,
     XOR,
     XNOR,
-    OTHER,
-    OUTPUT
 };
 
-class logicgate
+class Node
+{
+public:
+    std::vector <Node*> inputs;
+    virtual bool getOutput() = 0;
+    virtual ~Node() = default;
+};
+
+class InputNode: public Node
+{
+    private:
+        bool input;
+
+    public:
+        InputNode(bool initalState = 0){
+            input = initalState;
+        }
+
+        bool getOutput() override{
+            return input;
+        }
+
+        bool setInput(bool val){
+            this->input = val;
+        }
+};
+
+class LogicGate: public Node
 {
 private:
-bool a;
-bool b;
 gatetype type;
-bool output;
     
 public:
-    logicgate(gatetype type, bool expr = 0){
+    LogicGate(gatetype type){
         this->type = type;
     };
-    // ~logicgate();
 
-    bool getOutput(){
-        switch (type)
-        {
-        case AND:
-            output = a && b;
-            break;
-        case OR:
-            output = a || b;
-            break;
-        case NAND:
-            output = !(a && b);
-            break;
-        case NOR:
-            output = !(a || b);
-            break;
-        case XOR:
-            output = (a && !b) || (!a && b);
-            break;
-        case XNOR:
-            output = (!a && !b) || (a && b);
-            break;
-        default:
-            output = -1;
-            break;
+    LogicGate(gatetype type, Node* inputa, Node* inputb){
+        this->type = type;
+        addInput(inputa);
+        addInput(inputb);
+    };
+
+    bool getOutput() override {
+        switch(type) {
+            case AND:
+                return inputs[0]->getOutput() && inputs[1]->getOutput();
+            case OR:
+                return inputs[0]->getOutput() || inputs[1]->getOutput();
+            case NOT:
+                return !inputs[0]->getOutput();
+            case NAND:
+                return !(inputs[0]->getOutput() && inputs[1]->getOutput());
+            case NOR:
+                return !(inputs[0]->getOutput() || inputs[1]->getOutput());
+            case XOR:
+                return ((!inputs[0]->getOutput() && inputs[1]->getOutput())|| (inputs[0]->getOutput() && !inputs[1]->getOutput()));
+            case XNOR:
+                return ((!inputs[0]->getOutput() && !inputs[1]->getOutput())|| (inputs[0]->getOutput() && inputs[1]->getOutput()));
+            default:
+                return false;
         }
-        return output;
-    };
+    }
 
-    void setInputs(bool a1, bool b1){
-        a = a1;
-        b = b1;
-    };
+    void addInput(Node* input){
+        inputs.push_back(input);
+    }
 };
 
 int main(){
 
-    logicgate andgate = logicgate(XNOR);
-    andgate.setInputs(0, 0);
-    std::cout << andgate.getOutput();
-    andgate.setInputs(0, 1);
-    std::cout << andgate.getOutput();
-    andgate.setInputs(1, 0);
-    std::cout << andgate.getOutput();
-    andgate.setInputs(1, 1);
-    std::cout << andgate.getOutput();
+    InputNode a = InputNode(0);
+    InputNode b = InputNode(1);
+    LogicGate andgate = LogicGate(AND, &a, &b);
+    LogicGate xorgate = LogicGate(XNOR, &andgate, &a);
+    std::cout << xorgate.getOutput();
 
     return 0;
 }
