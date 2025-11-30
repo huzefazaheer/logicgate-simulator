@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "../misc/linkedlist.h";
 
 enum gatetype{
     AND,
@@ -14,7 +15,7 @@ enum gatetype{
 class Node
 {
 public:
-    std::vector <Node*> inputs;
+    LinkedList <Node*> inputs;
     virtual bool getOutput() = 0;
     virtual ~Node() = default;
 };
@@ -33,8 +34,8 @@ class InputNode: public Node
             return input;
         }
 
-        bool setInput(bool val){
-            this->input = val;
+        void setInput(bool val){
+            input = val;
         }
 };
 
@@ -55,37 +56,39 @@ public:
     };
 
     bool getOutput() override {
+        std::vector inputarr = inputs.getArray();
         switch(type) {
             case AND:
-                return inputs[0]->getOutput() && inputs[1]->getOutput();
+                return inputarr[0]->getOutput() && inputarr[1]->getOutput();
             case OR:
-                return inputs[0]->getOutput() || inputs[1]->getOutput();
+                return inputarr[0]->getOutput() || inputarr[1]->getOutput();
             case NOT:
-                return !inputs[0]->getOutput();
+                return !inputarr[0]->getOutput();
             case NAND:
-                return !(inputs[0]->getOutput() && inputs[1]->getOutput());
+                return !(inputarr[0]->getOutput() && inputarr[1]->getOutput());
             case NOR:
-                return !(inputs[0]->getOutput() || inputs[1]->getOutput());
+                return !(inputarr[0]->getOutput() || inputarr[1]->getOutput());
             case XOR:
-                return ((!inputs[0]->getOutput() && inputs[1]->getOutput())|| (inputs[0]->getOutput() && !inputs[1]->getOutput()));
+                return ((!inputarr[0]->getOutput() && inputarr[1]->getOutput())|| (inputarr[0]->getOutput() && !inputarr[1]->getOutput()));
             case XNOR:
-                return ((!inputs[0]->getOutput() && !inputs[1]->getOutput())|| (inputs[0]->getOutput() && inputs[1]->getOutput()));
+                return ((!inputarr[0]->getOutput() && !inputarr[1]->getOutput())|| (inputarr[0]->getOutput() && inputarr[1]->getOutput()));
             default:
                 return false;
         }
     }
 
     void addInput(Node* input){
-        inputs.push_back(input);
+        inputs.appendAtTail(input);
     }
 };
 
 int main(){
-
     InputNode a = InputNode(0);
     InputNode b = InputNode(1);
     LogicGate andgate = LogicGate(AND, &a, &b);
     LogicGate xorgate = LogicGate(XNOR, &andgate, &a);
+    std::cout << andgate.getOutput();
+    a.setInput(1);
     std::cout << xorgate.getOutput();
 
     return 0;
