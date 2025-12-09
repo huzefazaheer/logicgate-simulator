@@ -1,3 +1,8 @@
+#ifndef LOGICGATE_H
+#define LOGICGATE_H
+
+#include <iostream>
+
 #include <iostream>
 
 class LogicGate{
@@ -109,8 +114,8 @@ class GateNOT: public LogicGate{
 
 class GateXOR: public LogicGate{
     public:
-        GateXOR(LogicGate* in1)
-        : LogicGate(in1, nullptr) {}
+        GateXOR(LogicGate* in1, LogicGate* in2)
+        : LogicGate(in1, in2) {}
 
         void getNextState() override{
             bool output = (!node1->getCurrentState() && node2->getCurrentState()) || (node1->getCurrentState() && !node2->getCurrentState());
@@ -120,8 +125,8 @@ class GateXOR: public LogicGate{
 
 class GateXNOR: public LogicGate{
     public:
-        GateXNOR(LogicGate* in1)
-        : LogicGate(in1, nullptr) {}
+        GateXNOR(LogicGate* in1, LogicGate* in2)
+        : LogicGate(in1, in2) {}
 
         void getNextState() override{
             bool output = (node1->getCurrentState() && node2->getCurrentState()) || (!node1->getCurrentState() && !node2->getCurrentState());
@@ -129,3 +134,4 @@ class GateXNOR: public LogicGate{
         }
 };
 
+#endif

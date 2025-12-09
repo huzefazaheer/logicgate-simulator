@@ -1,5 +1,4 @@
-#include "./logicgate.h"
-using namespace std;
+#include "logicgate.h"
 
 struct node{
     LogicGate* gate;
