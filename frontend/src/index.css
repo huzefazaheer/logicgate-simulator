@@ -56,6 +56,7 @@ button:focus-visible {
   width: 128px;
   height: 128px;
   font-size: 10px;
+  user-select: none;
 }
 
 @media (prefers-color-scheme: light) {

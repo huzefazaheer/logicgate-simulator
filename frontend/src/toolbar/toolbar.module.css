@@ -11,6 +11,7 @@
 
 .menu {
   margin-top: 0;
+  display: none;
 }
 
 .menu ul {

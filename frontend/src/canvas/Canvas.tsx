@@ -5,17 +5,27 @@ function Canvas({ coords, setCoords }) {
   const [selectedGate, setSelectedGate] = useState(0)
   const [placedGates, setPlacedGates] = useState([])
 
-  const gateImages = { 1: 'and.svg', 2: 'or.svg', 3: 'not.svg' }
+  const gateImages = {
+    1: 'and.svg',
+    2: 'or.svg',
+    3: 'not.svg',
+    4: 'nand.svg',
+    5: 'nor.svg',
+    6: 'xor.svg',
+    7: 'xnor.svg',
+    8: 'input.svg',
+  }
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key.toLowerCase() === 'g') {
-        // Use the functional setter to get the "fresh" state value
         setSelectedGate((prev) => {
-          const nextValue = prev >= 3 ? 0 : prev + 1
+          const nextValue = prev >= 8 ? 0 : prev + 1
           console.log('New Gate Index:', nextValue)
           return nextValue
         })
+      } else if (e.key === 'Escape') {
+        setSelectedGate(0)
       }
     }
 
