@@ -1,0 +1,7 @@
+.canvas {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  margin-top: 60px !important;
+  margin: 10px;
+}
